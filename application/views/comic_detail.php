@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta http-equiv="content-type" content="text/html" charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Komik</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="<?php echo base_url();?>assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/toastr.css">
+    <!-- DataTables CSS -->
+    <link href="<?php echo base_url();?>assets/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/font-awesome/css/font-awesome.css">
+
+
+</head>
+
+<body>
+
+
+<div class="container">
+    <div id="wrapper">
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Komik
+                        <div class="pull-right">
+                            <a href="<?php echo base_url();?>comic/storeComic/<?php echo $id;?>" class="btn btn-danger pull-left"><i class="fa fa-plus"></i> tambah seri</a> 
+                        </div>
+                    </h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+
+                	<?php
+                		foreach ($detail_komik->result() as $rowi) {
+                	?>
+
+                	<div class="col-lg-4">
+						<img src="<?php echo base_url();?>upload/komik/<?php echo $rowi->image;?>" class="img-responsive">
+					</div>
+					<div class="col-lg-8">
+						<div class="title">
+							<h3><?php echo $rowi->nama_komik;?></h3>
+						</div>
+						<div class="body">
+							<?php echo $rowi->keterangan;?>
+						</div>
+					</div>
+
+                	<?php		
+                		}
+                	?>
+
+                	<hr>
+
+                	<div class="row">
+                	<div class="col-lg-12">
+                	<div class="panel panel-default">
+                		<div class="panel-body">
+
+                			<div class="table-responsive col-lg-12">
+		                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+		                            <thead>
+		                                <tr>
+		                                    <th>#</th>
+		                                    <th>Judul</th>
+		                                    <th>Date</th>
+		                                    <th>Aksi</th>
+		                                </tr>
+		                            </thead>
+		                            <tbody>
+		                            	<?php
+											//untuk menampilkan data dari table, diambil dari variable table yg ada di controller hubungi
+											$no=1;
+											foreach($komik_seri->result() as $row){
+										?>
+		                                    <tr class="">
+		                                        <td><?php echo $no++;?></td>
+		                                        <td><a href="<?php echo base_url();?>comic/showComic/<?php echo $row->id;?>"><?php echo $row->nama_komik;?></a></td>
+		                    					<td><?php echo $row->date; ?></td>
+		                                        <td>
+		                                        	<a href="<?php echo base_url();?>comic/showComic/<?php echo $row->id;?>" class="icon huge" title="show"><i class="fa fa-eye"></i></a>&nbsp;
+		                                            <a href="#" onclick="showAjaxModal('<?php echo base_url();?>modal/popup/modal_komik_edit/<?php echo $row->id;?>');" class="icon huge" title="edit"><i class="fa fa-pencil"></i></a>&nbsp;
+		                                            <a href="#" onclick="confirm_modal('<?php echo base_url();?>comic/getComic/delete/<?php echo $row->id;?>/<?php echo $id;?>');" class="icon huge" data-toggle="modal" title="remove"><i class="fa fa-trash-o"></i></a>&nbsp;
+		                                        </td>
+		                                    </tr>
+		                                    <?php } ?>
+		                            </tbody>
+		                        </table>
+		                    </div>
+
+                		</div>
+                	</div>
+                	</div>	
+                	</div>
+                   
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+</div>
+    <!-- jQuery -->
+    <script src="<?php echo base_url();?>assets/js/jquery-1.11.0.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="<?php echo base_url();?>assets/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="<?php echo base_url();?>assets/js/metisMenu/metisMenu.min.js"></script>
+
+    <script src="<?php echo base_url();?>assets/js/toastr.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="<?php echo base_url();?>assets/js/dataTables/jquery.dataTables.js"></script>
+    <script src="<?php echo base_url();?>assets/js/dataTables/dataTables.bootstrap.js"></script>
+
+    <script type="text/javascript" src="<?php echo base_url();?>assets/ckeditor/ckeditor.js"></script>
+    <script>
+
+        // This call can be placed at any point after the
+        // <textarea>, or inside a <head><script> in a
+        // window.onload event handler.
+
+        // Replace the <textarea id="editor"> with an CKEditor
+        // instance, using default configurations.
+
+        CKEDITOR.replace( 'editor1' );
+
+    </script>
+    
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    $(document).ready(function() {
+        $('#dataTables-example').dataTable();
+    });
+    </script>
+
+     <script type="text/javascript">
+    function showAjaxModal(url)
+    {
+        // SHOWING AJAX PRELOADER IMAGE
+        jQuery('#modal_ajax .modal-body').html('<div style="text-align:center;margin-top:200px;"><img src="<?php echo base_url();?>assets/images/loader-1.gif" /></div>');
+        
+        // LOADING THE AJAX MODAL
+        jQuery('#modal_ajax').modal('show', {backdrop: 'true'});
+        
+        //alert(url);
+        // SHOW AJAX RESPONSE ON REQUEST SUCCESS
+        $.ajax({
+            url: url,
+            success: function(response)
+            {
+                jQuery('#modal_ajax .modal-body').html(response);
+
+            }
+        });
+    }
+    </script>
+    
+    <!-- (Ajax Modal)-->
+    <div class="modal fade" id="modal_ajax">
+        <div class="modal-dialog" style="width: 70%;">
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Artikel</h4>
+                </div>
+                
+                <div class="modal-body" style="height:570px; overflow:auto;">
+                
+                    
+                    
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    <script type="text/javascript">
+    function confirm_modal(delete_url)
+    {
+        jQuery('#modal-4').modal('show', {backdrop: 'static'});
+        document.getElementById('delete_link').setAttribute('href' , delete_url);
+    }
+    </script>
+    
+    <!-- (Normal Modal)-->
+    <div class="modal fade" id="modal-4">
+        <div class="modal-dialog">
+            <div class="modal-content" style="margin-top:100px;">
+                
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" style="text-align:center;">Are you sure to delete this information ?</h4>
+                </div>
+                
+                
+                <div class="modal-footer" style="margin:0px; border-top:0px; text-align:center;">
+                    <a href="#" class="btn btn-danger" id="delete_link">delete</a>
+                    <button type="button" class="btn btn-info" data-dismiss="modal">cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHOW TOASTR NOTIFIVATION -->
+    <?php if ($this->session->flashdata('flash_message') != ""):?>
+
+    <script type="text/javascript">
+        toastr.success('<?php echo $this->session->flashdata("flash_message");?>');
+    </script>
+
+    <?php elseif ($this->session->flashdata('flash_message_error') != "") :?>
+
+    <script type="text/javascript">
+        toastr.error('<?php echo $this->session->flashdata("flash_message_error");?>');
+    </script>
+
+    <?php endif;?>
+
+</body>
+
+</html>
